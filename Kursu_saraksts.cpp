@@ -17,7 +17,7 @@ Kursu_saraksts::Kursu_saraksts(int length)
         string message = "Kursu saraksta garumam jabut >=0, bet Jusu vertiba ir " + to_string(length);
         throw My_error{message};
     }
-    else if (length = 0)
+    else if (length == 0)
     {
         dynamic_array = nullptr;
     }
@@ -129,8 +129,8 @@ void Kursu_saraksts::resize(int new_length)
     {
         data[i] = dynamic_array[i];
     }
-
     delete[] dynamic_array;
+
     dynamic_array = data;
     length = new_length;
 }

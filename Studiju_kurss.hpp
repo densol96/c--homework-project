@@ -25,13 +25,16 @@ public:
     string get_id() const;
     string get_nosaukums() const;
     int get_kp() const;
-    int set_atzime() const;
+    int get_atzime() const;
 
     // izvada pilnu informāciju par studiju kursu, ieskaitot atzīmi;
     void display_full() const;
 
     // izvada informāciju par studiju kursu bez atzīmes
     friend ostream &operator<<(ostream &os, const Studiju_kurss &src);
+
+    // Papild izvade: Nosaukums un atzime
+    void display_name_grade() const;
 };
 
 #endif

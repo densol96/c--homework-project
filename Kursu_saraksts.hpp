@@ -36,7 +36,7 @@ public:
     // Parslogo <<
     Kursu_saraksts &operator=(const Kursu_saraksts &rhs);
 
-        void push_back(const Studiju_kurss &kurss);
+    void push_back(const Studiju_kurss &kurss);
     Studiju_kurss pop_back();
 };
 

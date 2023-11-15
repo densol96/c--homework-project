@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cmath>
 #include "Students.hpp"
 #include "My_error.hpp"
 
@@ -9,6 +10,7 @@ Students::Students() {}
 Students::Students(const string &id, const string &vards, const string &grupa, int gads, const Kursu_saraksts &studiju_kursi)
     : id{id}, vards{vards}, grupa{grupa}, studiju_gads{gads}, studiju_kursi{studiju_kursi}
 {
+
     check_gads_range(gads);
 } // Musu veidotam konteinerim ir implements copy constructor
 
@@ -128,4 +130,143 @@ Studiju_kurss &Students::operator[](int i)
 const Studiju_kurss &Students::operator[](int i) const
 {
     return studiju_kursi[i];
+}
+
+// PAPILDINA KURSU SARAKSTU
+bool Students::aizvietot_kursu(string id)
+{
+    while (true)
+    {
+        cout << "Kursa identifikators --> " << id << " sakrīt ar sarakstā esoša kursa identifikatoru, iespējami divi risinājumi:" << endl;
+        cout << "1) Jaunais kurss aizvieto esošo." << endl;
+        cout << "2) Jaunais kurss netiek pievienots, tiek saglabāts esošais." << endl;
+        cout << "Jusu lemums (1 vai 2) ---- > ";
+        int choice;
+        cin >> choice;
+        if (choice == 1)
+            return true;
+        else if (choice == 2)
+        {
+            return false;
+        }
+        else
+        {
+            cout << "Nepareizs inputs! Jums ir tikai 2 opcijas! Pameginiet velreiz!" << endl
+                 << endl;
+        }
+    }
+}
+
+void Students::pievienot_kursu(const Studiju_kurss &kurss)
+{
+    for (int i{0}, length = studiju_kursi.size(); i < length; i++)
+    {
+        if (studiju_kursi[i].get_id() == kurss.get_id())
+        {
+            if (aizvietot_kursu(kurss.get_id()))
+            {
+                // Studiju_kurss klasse nesatur pointerus, tapec default copy assignment operator will be just fine
+                studiju_kursi[i] = kurss;
+                return;
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+    // Ja kurss neatkartojas, vienkarshi pievienojam kursu saraksta beigas
+    studiju_kursi.push_back(kurss);
+}
+
+void Students::pievienot_kursus(const Kursu_saraksts &kursi)
+{
+    for (int i{0}, length = kursi.size(); i < length; i++)
+    {
+        pievienot_kursu(kursi[i]);
+    }
+}
+
+// VIDEJA UN VIDEJA SVERTA ATZIMES
+double Students::videja_atzime() const
+{
+    int total{0};
+    bool vismaz_viena_atzime{false};
+
+    for (int i{0}, length = studiju_kursi.size(); i < length; i++)
+    {
+        int kursa_atzime = studiju_kursi[i].get_atzime();
+        if (kursa_atzime != -1)
+        {
+            vismaz_viena_atzime = true;
+            total += kursa_atzime;
+        }
+    }
+
+    if (!vismaz_viena_atzime)
+    {
+        return -1;
+    }
+    return static_cast<double>(total) / studiju_kursi.size();
+}
+
+double Students::videja_sversta_atzime() const
+{
+    int total{0};
+    int total_kp{0};
+    bool vismaz_viena_atzime{false};
+
+    for (int i{0}, length = studiju_kursi.size(); i < length; i++)
+    {
+        int kursa_atzime = studiju_kursi[i].get_atzime();
+        int kursa_kp = studiju_kursi[i].get_kp();
+
+        if (kursa_atzime != -1)
+        {
+            vismaz_viena_atzime = true;
+            total += kursa_atzime * kursa_kp;
+            total_kp += kursa_kp;
+        }
+    }
+
+    if (!vismaz_viena_atzime)
+    {
+        return -1;
+    }
+    else if (total == 0)
+    {
+        return 0;
+    }
+    return static_cast<double>(total) / total_kp;
+}
+
+void Students::izvada_kursi_atzimes() const
+{
+    for (int i{0}, length = studiju_kursi.size(); i < length; i++)
+    {
+        studiju_kursi[i].display_name_grade();
+    }
+}
+
+void Students::izvada_info() const
+{
+    cout << "ID: " << id << endl;
+    cout << "Vards: " << vards << endl;
+    cout << "Studenta kursi un atzimes par tiem:" << endl;
+    izvada_kursi_atzimes();
+}
+
+void Students::izvada_info_ar_vid_atzimi() const
+{
+    cout << "ID: " << id << endl;
+    cout << "Vards: " << vards << endl;
+    cout << "Videja atzime: " << round(videja_atzime() * 100) / 100 << endl;
+    cout << "Videja sversta atzime: " << round(videja_sversta_atzime() * 100) / 100 << endl;
+}
+
+void Students::izvada_pilno_info() const
+{
+    izvada_info_ar_vid_atzimi();
+    cout << "Studenta kursi un atzimes par tiem:" << endl;
+    izvada_kursi_atzimes();
 }

@@ -43,6 +43,7 @@ void Studiju_kurss::set_atzime(int atzime_value)
         string message = "Atzimes vertibas var but no -1 lidz 10, bet Jusu vertiba ir " + to_string(atzime_value);
         throw My_error{message};
     }
+    atzime = atzime_value;
 }
 
 string Studiju_kurss::get_id() const
@@ -60,7 +61,7 @@ int Studiju_kurss::get_kp() const
     return kp;
 }
 
-int Studiju_kurss::set_atzime() const
+int Studiju_kurss::get_atzime() const
 {
     return atzime;
 }
@@ -81,4 +82,10 @@ ostream &operator<<(ostream &os, const Studiju_kurss &src)
 {
     os << src.nosaukums << " ( " << src.id << " ), " << src.kp << " KP.";
     return os;
+}
+
+// Nosaukums - atzime
+void Studiju_kurss::display_name_grade() const
+{
+    cout << nosaukums << " - " << atzime << endl;
 }

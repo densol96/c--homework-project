@@ -16,6 +16,9 @@ private:
     Kursu_saraksts studiju_kursi{};
 
     void check_gads_range(int gads);
+    bool aizvietot_kursu(string id);
+    // gan izvada_info, gan  izvada_pilno_info prasa ari katra kursa atzimi, tapec varam refactor code a bit..
+    void izvada_kursi_atzimes() const;
 
 public:
     // Konstruktori
@@ -47,6 +50,23 @@ public:
     // [] operators
     Studiju_kurss &operator[](int i);
     const Studiju_kurss &operator[](int i) const;
+
+    // PAPILDINA KURSU SARAKSTU
+    void pievienot_kursu(const Studiju_kurss &kurss);
+    void pievienot_kursus(const Kursu_saraksts &kursi);
+
+    // VIDEJA UN VIDEJA SVERSTA ATZIMES
+    double videja_atzime() const;
+    double videja_sversta_atzime() const;
+
+    // IZVADES FUNKCIJAS
+
+    // izvada studenta identifikatoru, vārdu un viņa studiju kursu nosaukumus un atzīmi
+    void izvada_info() const;
+    // izvada studenta identifikatoru, vārdu un vidējo atzīmi un vidējo svērto atzīmi
+    void izvada_info_ar_vid_atzimi() const;
+    // izvada pilnu informāciju par studentu, ieskaitot informāciju par studiju kursiem void izvada_info_ar_vid_atzimi();
+    void izvada_pilno_info() const;
 };
 
 #endif
