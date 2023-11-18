@@ -25,7 +25,7 @@ void Students::check_gads_range(int gads)
 {
     if (gads < 1 || gads > 4)
     {
-        string message = "Studiju gada nosacijumi:  pieļaujamās vērtības: [1; 4], bet Jusu vertiba ir " + to_string(gads);
+        string message = "Year range is [1; 4], but your provided value is " + to_string(gads);
         throw My_error{message};
     }
 }
@@ -106,7 +106,7 @@ Studiju_kurss &Students::kurss_pec_id(const string &id)
             return studiju_kursi[i];
         }
     }
-    throw My_error{"Tada kursa studentam nav! Funkcija nevar neko atgriezt!"};
+    throw My_error{"Student does not have a course with such id!"};
 }
 
 const Studiju_kurss &Students::kurss_pec_id(const string &id) const
@@ -118,7 +118,7 @@ const Studiju_kurss &Students::kurss_pec_id(const string &id) const
             return studiju_kursi[i];
         }
     }
-    throw My_error{"Tada kursa studentam nav! Funkcija nevar neko atgriezt!"};
+    throw My_error{"Student does not have a course with such id!"};
 }
 
 // Opertor [] - jau implementejam din. massivaa, tapec seit bus pavisam isi
@@ -137,10 +137,11 @@ bool Students::aizvietot_kursu(string id)
 {
     while (true)
     {
-        cout << "Kursa identifikators --> " << id << " sakrīt ar sarakstā esoša kursa identifikatoru, iespējami divi risinājumi:" << endl;
-        cout << "1) Jaunais kurss aizvieto esošo." << endl;
-        cout << "2) Jaunais kurss netiek pievienots, tiek saglabāts esošais." << endl;
-        cout << "Jusu lemums (1 vai 2) ---- > ";
+        cout << "Student already has the course with the id of --> " << id << "" << endl;
+        cout << "Therefore you have 2 options:" << endl;
+        cout << "1) Replace the existing course." << endl;
+        cout << "2) Keep the old course." << endl;
+        cout << "Your option (1 vai 2) ---- > ";
         int choice;
         cin >> choice;
         if (choice == 1)
@@ -191,6 +192,7 @@ void Students::pievienot_kursus(const Kursu_saraksts &kursi)
 double Students::videja_atzime() const
 {
     int total{0};
+    int active_grades{0};
     bool vismaz_viena_atzime{false};
 
     for (int i{0}, length = studiju_kursi.size(); i < length; i++)
@@ -200,6 +202,7 @@ double Students::videja_atzime() const
         {
             vismaz_viena_atzime = true;
             total += kursa_atzime;
+            active_grades++;
         }
     }
 
@@ -207,7 +210,7 @@ double Students::videja_atzime() const
     {
         return -1;
     }
-    return static_cast<double>(total) / studiju_kursi.size();
+    return static_cast<double>(total) / active_grades;
 }
 
 double Students::videja_sversta_atzime() const
@@ -242,6 +245,10 @@ double Students::videja_sversta_atzime() const
 
 void Students::izvada_kursi_atzimes() const
 {
+    if (studiju_kursi.size() == 0)
+    {
+        cout << "CURRENTLY NO COURSES ADDED FOR THIS STUDENT!" << endl;
+    }
     for (int i{0}, length = studiju_kursi.size(); i < length; i++)
     {
         studiju_kursi[i].display_name_grade();

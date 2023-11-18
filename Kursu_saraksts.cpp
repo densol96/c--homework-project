@@ -14,7 +14,7 @@ Kursu_saraksts::Kursu_saraksts(int length)
 {
     if (length < 0)
     {
-        string message = "Kursu saraksta garumam jabut >=0, bet Jusu vertiba ir " + to_string(length);
+        string message = "Index cannot be negative, but your provided value is " + to_string(length);
         throw My_error{message};
     }
     else if (length == 0)
@@ -33,6 +33,7 @@ Kursu_saraksts::Kursu_saraksts(const Kursu_saraksts &orig)
 {
     if ((orig.dynamic_array != nullptr) && (this != &orig))
     {
+        dynamic_array = new Studiju_kurss[length];
         for (int i{0}; i < length; i++)
         {
             dynamic_array[i] = orig.dynamic_array[i];
@@ -50,7 +51,10 @@ Kursu_saraksts::Kursu_saraksts(Kursu_saraksts &&temp)
 
 Kursu_saraksts::~Kursu_saraksts()
 {
-    delete[] dynamic_array;
+    if (dynamic_array != nullptr)
+    {
+        delete[] dynamic_array;
+    }
 }
 
 void Kursu_saraksts::erase()

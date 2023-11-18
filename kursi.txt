@@ -1,0 +1,7 @@
+1) PROG_1, Programming, 4kp
+2) MATH_2, Mathematics, 3kp
+3) LAN_3, Networking, 4kp
+4) ENG_4, English, 2kp
+5) BUS_5, Business, 1kp
+6) CHN_6, Chinese, 1kp
+7) OS_7, Operational Systems, 4kp

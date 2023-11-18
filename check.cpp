@@ -1,31 +1,30 @@
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <cmath>
-#include <cstdlib>
 
-using namespace std;
-
-string OS;
-
-void clear_screen()
+void displayCoursesFromFile(const std::string &filename)
 {
-#ifdef __linux__
-    system("clear");
-#elif __APPLE__
-// Add any MacOS-specific clear screen code if needed
-#elif _WIN32
-    system("cls");
-#endif
-}
+    std::ifstream inputFile(filename);
 
-void flash_screen(int choice)
-{
-    (void)(OS == "linux" ? system("clear") : system("cls"));
+    if (!inputFile.is_open())
+    {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+
+    std::string courseName;
+    while (std::getline(inputFile, courseName))
+    {
+        std::cout << courseName << std::endl;
+    }
+
+    inputFile.close();
 }
 
 int main()
 {
-    getOS();
-    cout << OS << endl;
+    std::string filename = "kursi.txt"; // Update with your file name
+    displayCoursesFromFile(filename);
+
     return 0;
 }
