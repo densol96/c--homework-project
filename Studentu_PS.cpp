@@ -48,7 +48,8 @@ void Studentu_PS::pievienot_studentu(const Students &jauns_students)
         students_list.push_back(jauns_students);
         return;
     }
-    cout << "The student with such id is already present in the list! Student not added again!" << endl;
+    string message = "The student with such id of " + jauns_students.get_id() + " is already present in the list!";
+    throw My_error{message};
 }
 
 void Studentu_PS::pievienot_studentu(const string &id, const string &grupa, const string &vards, int studiju_gads)
@@ -58,7 +59,8 @@ void Studentu_PS::pievienot_studentu(const string &id, const string &grupa, cons
         students_list.push_back(Students{id, vards, grupa, studiju_gads});
         return;
     }
-    cout << "The student with such id is already present in the list! Student not added again!" << endl;
+    string message = "The student with such id of " + id + " is already present in the list!";
+    throw My_error{message};
 }
 
 void Studentu_PS::display_students_and_courses() const
