@@ -3,10 +3,12 @@
 #include <chrono>
 #include <thread>
 #include <fstream>
+#include <algorithm>
 #include "My_error.hpp"
 #include "Studentu_PS.hpp"
 #include "Students.hpp"
 #include "testi.hpp"
+
 using namespace std;
 
 void app(Studentu_PS &school_system);
@@ -18,10 +20,13 @@ void find_student_menu(Studentu_PS &school_system);
 void student_menu(Students &current_student);
 void display_student_menu(Students &current_student);
 void add_course(Students &current_student);
-void display_available_courses();
-void provide_course_information(Students &current_student);
-void print_text_file(string filename);
+// void display_available_courses();
+// void provide_course_information(Students &current_student);
+void print_text_file(const string &filename);
 void add_change_grade(Students &current_student);
+void display_all_students(Studentu_PS &school_system);
+bool compareStudentsUp(const Students &s1, const Students &s2);
+bool compareStudentsDown(const Students &s1, const Students &s2);
 
 // g++ -g Kursu_saraksts.cpp My_error.cpp Students.cpp Studentu_PS.cpp Studiju_kurss.cpp main.cpp -o main.exe
 
@@ -73,6 +78,10 @@ void app(Studentu_PS &school_system)
         }
         else if (choice == 3)
         {
+            display_all_students(school_system);
+        }
+        else if (choice == 4)
+        {
             break;
         }
         else
@@ -83,10 +92,13 @@ void app(Studentu_PS &school_system)
             continue;
         }
     }
+    clear_screen();
+    cout << "Program is terminating now... Bye!" << endl;
 }
 
 void clear_screen()
 {
+// USING C++ preprocessors, just choocr the appropriate for OS command to clear the terminal. Hopefully, you don't use mac...
 #ifdef __linux__
     system("clear");
 #elif _WIN32
@@ -100,7 +112,9 @@ void timer_ui(int secs, string text)
     for (int i{secs}; i >= 0; i--)
     {
         cout << i << endl;
+        // pauses the execution of the programm for a sec.
         this_thread::sleep_for(chrono::seconds(1));
+        // will move the cursor up one line and clear the rest of that line in the terminal
         cout << "\033[F\033[K";
     }
 }
@@ -111,7 +125,8 @@ void display_main_menu()
     cout << "===== MAIN MENU =====" << endl;
     cout << "1) Add a new student to the list" << endl;
     cout << "2) Find the student by ID" << endl;
-    cout << "3) Exit the program" << endl;
+    cout << "3) Display all students" << endl;
+    cout << "4) Exit the program" << endl;
 }
 
 void add_student(Studentu_PS &school_system)
@@ -134,8 +149,7 @@ void add_student(Studentu_PS &school_system)
 
     try
     {
-        Students new_student{id, vards, grupa, studiju_gads};
-        school_system.pievienot_studentu(new_student);
+        school_system.pievienot_studentu(id, grupa, vards, studiju_gads);
     }
     catch (const My_error &err)
     {
@@ -183,7 +197,10 @@ void student_menu(Students &current_student)
         int choice;
         cout << "Please enter your option ===> ";
         cin >> choice;
+
+        // clear the input buffer (otherwise the newline characetrs in the buffer will mess up the app later..)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         if (choice == 1)
         {
             display_student_menu(current_student);
@@ -325,7 +342,7 @@ void add_course(Students &current_student)
     return;
 }
 
-void print_text_file(string filename)
+void print_text_file(const string &filename)
 {
     ifstream file;
     file.open(filename);
@@ -371,7 +388,7 @@ void add_change_grade(Students &current_student)
             continue;
         }
 
-        cout << "Enter new grade [1, 10] --> ";
+        cout << "Enter the new grade [1, 10] --> ";
         int new_grade;
         cin >> new_grade;
 
@@ -389,7 +406,104 @@ void add_change_grade(Students &current_student)
         clear_screen();
         cout << "Changes successfully applied!" << endl;
         current_student.kurss_pec_id(id).display_name_grade();
-        timer_ui(5, "Returning to the student menu in..");
+        timer_ui(3, "Returning to the student menu in..");
         return;
+    }
+}
+
+bool compareStudentsUp(const Students &s1, const Students &s2)
+{
+    return s1.videja_sversta_atzime() < s2.videja_sversta_atzime();
+}
+
+bool compareStudentsDown(const Students &s1, const Students &s2)
+{
+    return s1.videja_sversta_atzime() > s2.videja_sversta_atzime();
+}
+
+void display_all_students(Studentu_PS &school_system)
+{
+    while (true)
+    {
+        clear_screen();
+        cout << "===== DISPLAY ALL STUDENTS OPTION =====" << endl;
+        cout << "1) Display all students - FULL INFORMATION" << endl;
+        cout << "2) Display all students - WITH GRADES ONLY" << endl;
+        cout << "3) Display all students - SORTED BY AVERAGE GRADE (lower to higher)" << endl;
+        cout << "4) Display all students - SORTED BY AVERAGE GRADE (higher to lower)" << endl;
+        cout << "5) Return to the main menu" << endl;
+
+        int choice;
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        if (choice == 1)
+        {
+            clear_screen();
+            school_system.display_students_full();
+            cout << "Please press Enter to continue...... " << endl;
+            cin.get();
+        }
+        else if (choice == 2)
+        {
+            clear_screen();
+            school_system.display_students_and_grades();
+            cout << "Please press Enter to continue...... " << endl;
+            cin.get();
+        }
+        else if (choice == 3)
+        {
+            // do not want to mutate the original vector inside the school system so will create a copy and work with it
+            clear_screen();
+            if (school_system.get_all_students().size() == 0)
+            {
+                cout << "Add the students to the system first!" << endl;
+                cout << "Please press Enter to continue...... " << endl;
+                cin.get();
+                continue;
+            }
+            vector<Students> sorted_vector = school_system.get_all_students();
+            sort(sorted_vector.begin(), sorted_vector.end(), compareStudentsUp);
+            cout << "Students sorted by grade FROM LOWER TO HIGHER:" << endl;
+            cout << "================" << endl;
+            for (const Students &st : sorted_vector)
+            {
+                st.izvada_info_ar_vid_atzimi();
+                cout << "================" << endl;
+            }
+            cout << "Please press Enter to continue...... " << endl;
+            cin.get();
+        }
+        else if (choice == 4)
+        {
+            // same reasoning - do not want to mutate the original vector inside the school system so will create a copy and work with it
+            clear_screen();
+            if (school_system.get_all_students().size() == 0)
+            {
+                cout << "Add the students to the system first!" << endl;
+                cout << "Please press Enter to continue...... " << endl;
+                cin.get();
+                continue;
+            }
+            vector<Students> sorted_vector = school_system.get_all_students();
+            sort(sorted_vector.begin(), sorted_vector.end(), compareStudentsDown);
+            cout << "Students sorted by grade FROM HIGHER TO LOWER:" << endl;
+            cout << "================" << endl;
+            for (const Students &st : sorted_vector)
+            {
+                st.izvada_info_ar_vid_atzimi();
+
+                cout << "================" << endl;
+            }
+            cout << "Please press Enter to continue...... " << endl;
+            cin.get();
+        }
+        else if (choice == 5)
+        {
+            return;
+        }
+        else
+        {
+            cout << "Wrong input! Please try again!" << endl;
+        }
     }
 }

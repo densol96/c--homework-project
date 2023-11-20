@@ -8,13 +8,14 @@
 Students::Students() {}
 
 Students::Students(const string &id, const string &vards, const string &grupa, int gads, const Kursu_saraksts &studiju_kursi)
+    // Our user-defined dynamic array-class Studiju kursi does HAVE a copy cnstructor, so it will handle this studiju_kursi{studiju_kursi}
     : id{id}, vards{vards}, grupa{grupa}, studiju_gads{gads}, studiju_kursi{studiju_kursi}
 {
-
+    // will trhow an error and prevent object from being created if wrong input
     check_gads_range(gads);
-} // Musu veidotam konteinerim ir implements copy constructor
+}
 
-// Delegating to the constructor above, and just additionaly to given args also provide a default dynamic Array Kursu saraksts
+// Delegating to the constructor above, and just additionaly to given args also provide a default dynamic Array Kursu saraksts which will start off empty
 Students::Students(const string &id, const string &vards, const string &grupa, int gads)
     : Students{id, vards, grupa, gads, Kursu_saraksts{}}
 {
@@ -48,12 +49,14 @@ void Students::set_vards(string vards)
 
 void Students::set_studiju_gads(int studiju_gads)
 {
+    // will throw an error if wrong
     check_gads_range(studiju_gads);
     this->studiju_gads = studiju_gads;
 }
 
 void Students::set_studiju_kursi(Kursu_saraksts studiju_kursi)
 {
+    // defined an assignment operator for Kursu_saraksts that will handle copying and working with memory
     this->studiju_kursi = studiju_kursi;
 }
 
@@ -121,7 +124,7 @@ const Studiju_kurss &Students::kurss_pec_id(const string &id) const
     throw My_error{"Student does not have a course with such id!"};
 }
 
-// Opertor [] - jau implementejam din. massivaa, tapec seit bus pavisam isi
+// Opertor [] - already overloaded for the Kursu_saraksts, so here it will be nice and short
 Studiju_kurss &Students::operator[](int i)
 {
     return studiju_kursi[i];
@@ -137,7 +140,7 @@ bool Students::aizvietot_kursu(string id)
 {
     while (true)
     {
-        cout << "Student already has the course with the id of --> " << id << "" << endl;
+        cout << "Student already has the course with the id of --> " << id << endl;
         cout << "Therefore you have 2 options:" << endl;
         cout << "1) Replace the existing course." << endl;
         cout << "2) Keep the old course." << endl;

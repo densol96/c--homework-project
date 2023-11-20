@@ -24,7 +24,7 @@ Students &Studentu_PS::students_pec_id(const string &id)
             return student;
         }
     }
-    string message = "Unable to find the stuent with the ID of: " + id;
+    string message = "Unable to find the student with the ID of: " + id;
     throw My_error{message};
 }
 
@@ -37,7 +37,7 @@ const Students &Studentu_PS::students_pec_id(const string &id) const
             return student;
         }
     }
-    string message = "Unable to find the stuent with the ID of: " + id;
+    string message = "Unable to find the student with the ID of: " + id;
     throw My_error{message};
 }
 
@@ -63,8 +63,17 @@ void Studentu_PS::pievienot_studentu(const string &id, const string &grupa, cons
     throw My_error{message};
 }
 
+void Studentu_PS::display_if_null() const
+{
+    if (students_list.size() == 0)
+    {
+        cout << "Currently no students were added to the system!" << endl;
+    }
+}
+
 void Studentu_PS::display_students_and_courses() const
 {
+    display_if_null();
     for (const Students &student : students_list)
     {
         cout << "========" << endl;
@@ -75,6 +84,7 @@ void Studentu_PS::display_students_and_courses() const
 
 void Studentu_PS::display_students_and_grades() const
 {
+    display_if_null();
     for (const Students &student : students_list)
     {
         cout << "========" << endl;
@@ -85,10 +95,16 @@ void Studentu_PS::display_students_and_grades() const
 
 void Studentu_PS::display_students_full() const
 {
+    display_if_null();
     for (const Students &student : students_list)
     {
         cout << "========" << endl;
         student.izvada_pilno_info();
         cout << "=========" << endl;
     }
+}
+
+const vector<Students> &Studentu_PS::get_all_students() const
+{
+    return students_list;
 }

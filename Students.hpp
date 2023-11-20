@@ -9,11 +9,11 @@ using namespace std;
 class Students
 {
 private:
-    string id{};    // matrokulas numurs
-    string grupa{}; // ITB vs. IZB
+    string id{}; // matrikulas numurs
+    string grupa{};
     string vards{};
-    int studiju_gads{1}; // [1; 4]
-    Kursu_saraksts studiju_kursi{};
+    int studiju_gads{1};            // [1; 4], default - 1
+    Kursu_saraksts studiju_kursi{}; // izaicinājums
 
     void check_gads_range(int gads);
     bool aizvietot_kursu(string id);
@@ -60,7 +60,6 @@ public:
     double videja_sversta_atzime() const;
 
     // IZVADES FUNKCIJAS
-
     // izvada studenta identifikatoru, vārdu un viņa studiju kursu nosaukumus un atzīmi
     void izvada_info() const;
     // izvada studenta identifikatoru, vārdu un vidējo atzīmi un vidējo svērto atzīmi

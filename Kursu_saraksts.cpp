@@ -39,6 +39,7 @@ Kursu_saraksts::Kursu_saraksts(const Kursu_saraksts &orig)
             dynamic_array[i] = orig.dynamic_array[i];
         }
     }
+    // else the default value of dynamic_array remain nullptr.
 }
 
 // Move konstruktors :)
@@ -87,6 +88,7 @@ void Kursu_saraksts::checkIndex(int i) const
 
 Studiju_kurss &Kursu_saraksts::operator[](int i)
 {
+    // throw an Error if out of range; else return a course
     checkIndex(i);
     return dynamic_array[i];
 }
@@ -99,13 +101,17 @@ const Studiju_kurss &Kursu_saraksts::operator[](int i) const
 
 Kursu_saraksts &Kursu_saraksts::operator=(const Kursu_saraksts &rhs)
 {
+    // if trying to assign the same object then just return
     if (this == &rhs)
     {
         return *this;
     }
+    // else - first take care of memory
     erase();
+
     if (rhs.dynamic_array != nullptr)
     {
+        // if rhs is not empty, then need to set size and copy its elements
         length = rhs.length;
         dynamic_array = new Studiju_kurss[length];
 
@@ -121,28 +127,46 @@ void Kursu_saraksts::resize(int new_length)
 {
     if (length == new_length)
         return;
-    if (length < 0)
+    if (new_length < 0)
     {
         string message = "Cannot resize to the provided negative value of " + to_string(new_length);
         throw My_error{message};
     }
-    Studiju_kurss *data = new Studiju_kurss[new_length];
-    int to_be_copied = (new_length < length) ? new_length : length;
-
-    for (int i{0}; i < to_be_copied; i++)
+    else if (new_length == 0)
     {
-        data[i] = dynamic_array[i];
+        // we already defined a function that can be used if we want to resize to 0
+        erase();
     }
-    delete[] dynamic_array;
+    else
+    {
+        // need a placeholder for the current data
+        Studiju_kurss *data = new Studiju_kurss[new_length];
+        // if we remove an element, we want to go up to the reduced size, else wana copy all curent content
+        int to_be_copied = (new_length < length) ? new_length : length;
 
-    dynamic_array = data;
-    length = new_length;
+        for (int i{0}; i < to_be_copied; i++)
+        {
+            // copy current data
+            data[i] = dynamic_array[i];
+        }
+        // free the current memory
+        delete[] dynamic_array;
+
+        // steal data pointer
+        dynamic_array = data;
+        data = nullptr;
+
+        // update to new_length
+        length = new_length;
+    }
 }
 
 void Kursu_saraksts::push_back(const Studiju_kurss &kurss)
 {
+    // resize to size+1
     int new_length = length + 1;
     resize(new_length);
+    // add a course at the back (last index = size - 1), using = operator
     dynamic_array[new_length - 1] = kurss;
 }
 

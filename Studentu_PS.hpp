@@ -23,8 +23,12 @@ public:
     void pievienot_studentu(const string &id, const string &grupa, const string &vards, int studiju_gads);
 
     // Displaying info
+    void display_if_null() const;
     void display_students_and_courses() const;
     void display_students_and_grades() const;
     void display_students_full() const;
+
+    // Get students_list
+    const vector<Students> &get_all_students() const;
 };
 #endif

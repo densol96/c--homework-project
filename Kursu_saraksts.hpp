@@ -33,7 +33,6 @@ public:
 
     int size() const;
 
-    // Parslogo <<
     Kursu_saraksts &operator=(const Kursu_saraksts &rhs);
 
     void push_back(const Studiju_kurss &kurss);

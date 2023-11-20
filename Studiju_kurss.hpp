@@ -11,12 +11,16 @@ private:
     string id{};
     string nosaukums{};
     int kp{0};      // >= 0
-    int atzime{-1}; // [-1; 10] --> -1 nozīmē, ka kursā vēl nav atzīmes, 0 nozīmē, ka students nav ticis pielaists pie eksāmena vai nav ieradies uz eksāmenu.
+    int atzime{-1}; // [-1; 10]
 public:
-    Studiju_kurss();
+    Studiju_kurss(); // "", "", 0, -1
     Studiju_kurss(const string &id, const string &nosaukums, int kp);
 
-    // Nepareizu vērtību gadījumā - izsviests izņēmums.
+    // Could also define copy constructor but since we do not work with pointers in this class, default copy cosntructor will be just fine
+
+    // ""Nepareizu vērtību gadījumā - izsviests izņēmums.""
+    void check_kp(int kp_val);
+
     void set_id(const string &id_value);
     void set_nosaukums(const string &nosaukums_value);
     void set_kp(int kp_value);
