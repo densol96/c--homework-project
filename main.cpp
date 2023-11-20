@@ -20,8 +20,6 @@ void find_student_menu(Studentu_PS &school_system);
 void student_menu(Students &current_student);
 void display_student_menu(Students &current_student);
 void add_course(Students &current_student);
-// void display_available_courses();
-// void provide_course_information(Students &current_student);
 void print_text_file(const string &filename);
 void add_change_grade(Students &current_student);
 void display_all_students(Studentu_PS &school_system);
@@ -98,11 +96,12 @@ void app(Studentu_PS &school_system)
 
 void clear_screen()
 {
-// USING C++ preprocessors, just choocr the appropriate for OS command to clear the terminal. Hopefully, you don't use mac...
+// USING C++ preprocessors, just choocr the appropriate for OS command to clear
+// the terminal. Hopefully, you don't use mac...
 #ifdef __linux__
-    system("clear");
+    (void)system("clear");
 #elif _WIN32
-    system("cls");
+    (void)system("cls");
 #endif
 }
 

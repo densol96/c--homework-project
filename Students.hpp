@@ -10,8 +10,8 @@ class Students
 {
 private:
     string id{}; // matrikulas numurs
-    string grupa{};
     string vards{};
+    string grupa{};
     int studiju_gads{1};            // [1; 4], default - 1
     Kursu_saraksts studiju_kursi{}; // izaicinājums
 
